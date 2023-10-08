@@ -6,8 +6,6 @@ Códigos e trabalhos desenvolvidos na disciplina SCC0223 - Estruturas de dados I
 ## Estrutura estrutura-dados-I
 ```
 estrutura-dados-I/
-*    ├── Lista1/
-*    ├── Lista2/
-*    ├── trabalhos/
+*    ├── lista3
 *    └── README.md
 ```
