@@ -36,12 +36,12 @@ typedef int bool;
 // Protótipos funções de gerenciamento 
 void inicializarListaLigEstat(LISTA_LIGADA_ESTATICA *lista);
 void exibirListaLigEstat(LISTA_LIGADA_ESTATICA lista);                            // (1)
-bool insercaoElemUltimoListaLigEstat(LISTA_LIGADA_ESTATICA *lista, int ch);
-bool buscaSequencialListaLigEstat(LISTA_LIGADA_ESTATICA lista, int ch, int *ant); // (2)
-int buscaSeqOrdListaLigEstat (LISTA_LIGADA_ESTATICA lista, int ch, int *ant);
-//bool insercaoOrdenadaListaLigEstat(LISTA_LIGADA_ESTATICA *lista, int ch);
-bool insercaoElemOrdListaLigEst (LISTA_LIGADA_ESTATICA *lista, int ch);
-int obterNoListaLigEstat (LISTA_LIGADA_ESTATICA *lista);
+bool buscaSequencialListaLigEstat(LISTA_LIGADA_ESTATICA lista, int ch, int *ant); 
+int buscaSeqOrdListaLigEstat (LISTA_LIGADA_ESTATICA lista, int ch, int *ant);     // (2)  
+bool insercaoElemOrdListaLigEst (LISTA_LIGADA_ESTATICA *lista, int ch);           // (5)
+int obterNoListaLigEstat (LISTA_LIGADA_ESTATICA *lista);                          // (3)
+void devolverNo (LISTA_LIGADA_ESTATICA *lista, int j);
+bool exclusaoElemListaLigEstat(LISTA_LIGADA_ESTATICA *lista, int ch);             // (4)
 
 
 int main(){
@@ -86,6 +86,14 @@ int main(){
     insercaoElemOrdListaLigEst(&lista, 10);
     exibirListaLigEstat(lista);
 
+
+    // Exclusão de elemento
+    int exclusao;
+    printf("Chave a ser excluída:\n");
+    scanf("%d", &exclusao);
+    exclusaoElemListaLigEstat(&lista, exclusao);
+    exibirListaLigEstat(lista);
+
     return 0;
 }
 
@@ -109,13 +117,6 @@ void exibirListaLigEstat(LISTA_LIGADA_ESTATICA lista){
     if (lista.inicio == -1){
         printf("A lista está vazia\n");
     }
-    /* else{
-        printf("Lista: ");
-        for (int i = lista.inicio; i < lista.dispo; i++){
-            printf("%d ", lista.A[i].chave);
-        }
-        printf("\n");
-    } */ 
     else{
         int i = lista.inicio;
         while (i > -1){
@@ -125,49 +126,6 @@ void exibirListaLigEstat(LISTA_LIGADA_ESTATICA lista){
         printf("\n");
     }
 };
-
-// * Inserção de elemento na lista (última posição)
-bool insercaoElemUltimoListaLigEstat(LISTA_LIGADA_ESTATICA *lista, int ch){ // passagem por referência
-    // Checar se a lista não está cheia
-    if (lista -> dispo == -1){
-        printf("A lista está cheia\n");
-        return false;
-    }
-    else{
-        // checar se é o primeiro elemento
-        if (lista -> inicio == -1){
-            lista -> inicio = 0;
-        }
-        // inserção sempre na primeira posição disponível
-        lista -> A[(lista -> dispo)].chave = ch; // Inserido novo valor
-        lista -> dispo++;
-
-        return true;
-    }
-}
-
-// * Busca sequencial de um elemento: retornando a posição da chave e do anterior
-// Equívoco: aqui n retorna posição da chave em uma variável! Apenas como texto, logo não é útil!!! 
-bool buscaSequencialListaLigEstat(LISTA_LIGADA_ESTATICA lista, int ch, int *ant){ //múltiplos retornos: uso de ponteiros
-    if (lista.inicio == -1){
-        printf("A lista está vazia, o elemento não se encontra na lista\n");
-        return false;
-    }
-    else{ // procure: percorra a lista elemento por elemento
-        for (int i = 0; i < lista.dispo; i++){
-            if(lista.A[i].chave == ch){ // encontrou
-                *ant = i - 1;
-                printf("Elemento %d encontrado na posição %d (posição do anterior: %d)\n", ch, i, *ant);
-                return true;
-                break;
-            }
-            if(i == (lista.dispo - 1)){ // foi até o último elem e não encontrou
-                printf("Elemento %d não encontrado na lista\n", ch);
-                return false;
-            }
-        }
-    }
-}
 
 // * Busca Sequencial Ordenada
 int buscaSeqOrdListaLigEstat (LISTA_LIGADA_ESTATICA lista, int ch, int *ant){
@@ -244,3 +202,78 @@ int obterNoListaLigEstat (LISTA_LIGADA_ESTATICA *lista){
     }
     return novo;
 }
+
+// * Devolução de nó para lista de nós disponíveis (para excluir valor da lista)
+void devolverNo (LISTA_LIGADA_ESTATICA *lista, int j){
+    lista -> A[j].prox = lista -> dispo;
+    lista -> dispo = j;
+}
+
+// * Exclusão de elemento
+bool exclusaoElemListaLigEstat(LISTA_LIGADA_ESTATICA *lista, int ch){
+    // checar se elemento está na lista
+    int i, ant;
+    i = buscaSeqOrdListaLigEstat(*lista, ch, &ant); // posição elem na lista (ausente: -1)
+    
+    if (i == -1){ // ausente
+        printf("O elemento %d não pertence à lista. Não pode ser escluído.\n", ch);
+        return false;
+    }
+    
+    // presente
+    if (ant == -1){
+        // primeiro elemento da lista
+        lista -> inicio = lista -> A[i].prox;
+    }
+    else{
+        // qualquer posição da lista
+        lista -> A[ant].prox = lista -> A[i].prox;
+    }
+    devolverNo(lista, i);
+    return true;
+}
+
+
+// * Busca sequencial de um elemento: retornando a posição da chave e do anterior
+// Equívoco: aqui n retorna posição da chave em uma variável! Apenas como texto, logo não é útil!!! 
+bool buscaSequencialListaLigEstat(LISTA_LIGADA_ESTATICA lista, int ch, int *ant){ //múltiplos retornos: uso de ponteiros
+    if (lista.inicio == -1){
+        printf("A lista está vazia, o elemento não se encontra na lista\n");
+        return false;
+    }
+    else{ // procure: percorra a lista elemento por elemento
+        for (int i = 0; i < lista.dispo; i++){
+            if(lista.A[i].chave == ch){ // encontrou
+                *ant = i - 1;
+                printf("Elemento %d encontrado na posição %d (posição do anterior: %d)\n", ch, i, *ant);
+                return true;
+                break;
+            }
+            if(i == (lista.dispo - 1)){ // foi até o último elem e não encontrou
+                printf("Elemento %d não encontrado na lista\n", ch);
+                return false;
+            }
+        }
+    }
+}
+
+// * Inserção de elemento na lista (última posição)
+// ERRO CONCEITUAL: NÃO EXISTE EM LISTA LIGADA
+/* bool insercaoElemUltimoListaLigEstat(LISTA_LIGADA_ESTATICA *lista, int ch){ // passagem por referência
+    // Checar se a lista não está cheia
+    if (lista -> dispo == -1){
+        printf("A lista está cheia\n");
+        return false;
+    }
+    else{
+        // checar se é o primeiro elemento
+        if (lista -> inicio == -1){
+            lista -> inicio = 0;
+        }
+        // inserção sempre na primeira posição disponível
+        lista -> A[(lista -> dispo)].chave = ch; // Inserido novo valor
+        lista -> dispo++;
+
+        return true;
+    }
+} */
