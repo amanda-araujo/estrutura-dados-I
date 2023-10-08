@@ -61,9 +61,9 @@ int main(){
 
     // Exibição da lista
     exibirListaLigEstat(lista); // passagem por valor (cópia)
-    return 0;
 
-    insercaoElemUltimoListaLigEstat(&lista, 100);
+    //insercaoElemUltimoListaLigEstat(&lista, 100);
+    insercaoElemOrdListaLigEst(&lista, 100);
     exibirListaLigEstat(lista);
     printf("Valor do campo dispo: %d\n", lista.dispo);
     printf("Quantidade de espaços disponíveis na lista: %d\n", (MAX - lista.dispo));
@@ -76,7 +76,7 @@ int main(){
 
     // Busca sequencial ordenada
     int posicao = buscaSeqOrdListaLigEstat (lista, 100, &ant);
-    printf("%d\n", posicao);
+    printf("Posição do elemento 100 buscado: %d\n", posicao);
 
     // Inserção ordenada
     insercaoElemOrdListaLigEst(&lista, 5);
@@ -107,7 +107,7 @@ void inicializarListaLigEstat(LISTA_LIGADA_ESTATICA *lista){
 void exibirListaLigEstat(LISTA_LIGADA_ESTATICA lista){
     // Percorrer toda a lista
     if (lista.inicio == -1){
-        printf("A lista está vazia");
+        printf("A lista está vazia\n");
     }
     /* else{
         printf("Lista: ");
@@ -119,9 +119,10 @@ void exibirListaLigEstat(LISTA_LIGADA_ESTATICA lista){
     else{
         int i = lista.inicio;
         while (i > -1){
-            printf("%d", lista.A[i].chave);
+            printf("%d ", lista.A[i].chave);
             i = lista.A[i].prox;
         }
+        printf("\n");
     }
 };
 
@@ -204,7 +205,7 @@ bool insercaoElemOrdListaLigEst (LISTA_LIGADA_ESTATICA *lista, int ch){
     }
 
     if (i != -1){
-        printf("O elemento já consta na lista. Não é possível inserir elemento duplicado.\n");
+        printf("O elemento %d já consta na lista. Não é possível inserir elemento duplicado.\n", ch);
         return false;
     }
 
@@ -217,6 +218,7 @@ bool insercaoElemOrdListaLigEst (LISTA_LIGADA_ESTATICA *lista, int ch){
     if (lista -> inicio == -1){
         // inserção em lista vazia
         lista -> inicio = i;
+        lista -> A[i].prox = -1;
     }
     else{
         if (ant == -1){
