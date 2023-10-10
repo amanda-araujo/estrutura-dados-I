@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 /* A forma mais comum de implementação: vetor de elementos do 
-tipo REGISTRO de tamanho MAX*/
+tipo REGISTRO de tamanho MAX - implementação estática*/
 
 #define MAX 50 // Tamanho vetor
 #define false 0
