@@ -53,7 +53,7 @@ NO* buscaSeqOrd(LISTA_LIGADA_CABECA_CIRCULAR_DUPLA *lista, int ch, NO* *ant){
     *ant = lista->cabeca;    // salva antecessor
     // nó cabeça: sentinela
     lista->cabeca->chave = ch;
-    while (end->chave != ch){
+    while (end->chave < ch){
         *ant = end;
         end = end->prox;
     } 
@@ -108,7 +108,6 @@ int main(){
     inserirElemOrd(&lista, 2);
     exibirLista(&lista);
 
-    // ERRO NA INSERÇÃO (OU EXIBIÇÃO): fora de ordem! 1 3 7 2 !!!
 
     return 0;
 }
